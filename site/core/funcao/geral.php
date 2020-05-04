@@ -25,3 +25,7 @@ function verificarValidadeSessao($deslogar = true, $redireciona = ''){
         }
     }
 }
+
+function enderecoForm($endereco, $indice) {
+    include("core/template/formEndereco.php");
+}

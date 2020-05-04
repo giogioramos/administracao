@@ -6,13 +6,15 @@ Class Cliente extends STMT {
     private $cpf; 
     private $rg;
     private $telefone;
+    private $enderecos;
 
-    public function __construct($nome, $dataNascimento, $cpf, $rg, $telefone){
+    public function __construct($nome, $dataNascimento, $cpf, $rg, $telefone, $enderecos){
         $this->nome = $nome;
         $this->dataNascimento = $dataNascimento;
         $this->cpf = $cpf;
         $this->rg = $rg;
         $this->telefone = $telefone;
+        $this->enderecos = $enderecos;
     }
 
     public function setNome($nome){
@@ -55,6 +57,14 @@ Class Cliente extends STMT {
         return $this->telefone;
     }
 
+    public function setEnderecos($enderecos){
+        $this->enderecos = $enderecos;
+    }
+
+    public function getEnderecos(){
+        return $this->enderecos;
+    }
+
     public function clienteExistente(){
         $sql = "SELECT id FROM usuario WHERE cpf = ?";
         $params = [$this->cpf];
@@ -68,7 +78,7 @@ Class Cliente extends STMT {
 
     public function inserir(){
         if (!$this->clienteExistente()) {
-            $sql = "INSERT INTO cliente (nome, datanascimento, cpf, rg, telefone) VALUES (?, ?, ?, ?, ?)";
+            $sql = "INSERT INTO cliente (nome, data_nascimento, cpf, rg, telefone) VALUES (?, ?, ?, ?, ?)";
             $params = [
                 $this->nome, 
                 $this->dataNascimento, 
@@ -77,6 +87,15 @@ Class Cliente extends STMT {
                 $this->telefone
             ];
             $this->executarQuery($sql, $params);
+            
+            $sql = "SELECT MAX(id) AS ultimo FROM cliente";
+            $utlimoId = $this->executarQuery($sql)[0]['ultimo'];
+
+            foreach ($this->enderecos as $endereco) {
+                $endereco->setIdCliente($utlimoId);
+                $endereco->inserir();
+            }
+            
             return true;
         } else {
             return false;
@@ -85,7 +104,7 @@ Class Cliente extends STMT {
 
     public function atualizar($id){
         if (!$this->clienteExistente()) {
-            $sql = "UPDATE cliente SET nome=?, datanascimento=?, cpf=?, rg=?, telefone=? where id = ?";
+            $sql = "UPDATE cliente SET nome=?, data_nascimento=?, cpf=?, rg=?, telefone=? where id = ?";
             $params = [
                 $this->nome, 
                 $this->dataNascimento, 
@@ -95,6 +114,15 @@ Class Cliente extends STMT {
                 $id
             ];
             $this->executarQuery($sql, $params);
+
+            foreach ($this->enderecos as $endereco) {
+                if ($endereco->getId() == 0) {
+                    $endereco->setIdCliente($id);
+                    $endereco->inserir();
+                } else {
+                    $endereco->atualizar($endereco->getId());
+                }
+            }
             return true;
         } else {
             return false;

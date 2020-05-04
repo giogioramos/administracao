@@ -31,7 +31,7 @@
                         foreach ($arr as $cliente) {
                             echo '<tr>';
                             echo '<td>'.$cliente['nome'].'</td>';
-                            echo '<td>'.date("d/m/Y", strtotime(str_replace('-','/',$cliente['datanascimento']))).'</td>';
+                            echo '<td>'.date("d/m/Y", strtotime(str_replace('-','/',$cliente['data_nascimento']))).'</td>';
                             echo '<td>'.$cliente['cpf'].'</td>';
                             echo '<td>'.$cliente['rg'].'</td>';
                             echo '<td>'.$cliente['telefone'].'</td>';
