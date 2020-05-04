@@ -77,7 +77,7 @@
             <br>
             <?php
                 if (isset($_GET['status']) && $_GET['status'] == 'enderecoInvalido') {
-                    dicaInput("Todos os campos dos endereços são obrigatórios!");
+                    dicaInput("Todos os campos dos endereços são obrigatórios! Não insira caractéres especiais!");
                 }
             ?>
             <h6 class="white-text">Endereço</h6>
